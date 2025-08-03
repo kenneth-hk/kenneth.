@@ -19,24 +19,22 @@
         <label>相对湿度 RH (%)：</label><br><input type="number" id="RH"><br>
         <label>风速 V (m/s)：</label><br><input type="number" id="V"><br>
         <label>紫外线指数 UVI：</label><br><input type="number" id="UVI"><br>
-        <button onclick="calculate()">提交并计算</button>
+        <button onclick="submitData()">提交并计算</button>
     </div>
     <script>
         const correctPassword = "admin123";
-        function checkPassword() {
-            let pwd = document.getElementById('password').value;
-            if (pwd === correctPassword) {
-                document.getElementById('password').style.display = 'none';
-                document.getElementById('form').style.display = 'block';
+        document.getElementById('password').addEventListener('change', function(){
+            if(this.value === correctPassword){
+                this.style.display='none';
+                document.getElementById('form').style.display='block';
             } else {
                 alert('密码错误');
             }
-        }
-        document.getElementById('password').addEventListener('change', checkPassword);
+        });
 
         function atan(x){ return Math.atan(x); }
 
-        async function calculate(){
+        async function submitData(){
             let Ta = parseFloat(document.getElementById('Ta').value);
             let RH = parseFloat(document.getElementById('RH').value);
             let V = parseFloat(document.getElementById('V').value);
@@ -58,11 +56,14 @@
 
             let result = (part1 + part2 + part3).toFixed(2);
 
-            let data = {result: result};
+            // 调用 API 保存结果
+            await fetch('/api/saveResult', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({result: result})
+            });
 
-            // 保存数据 (在GitHub Pages无法直接写文件，需用静态json模拟或用Vercel动态)
-            // 这里直接提示复制结果
-            alert("计算完成，结果是：" + result + "\n请手动更新 data.json 文件内容为： {\n  \"result\": \"" + result + "\"\n} ");
+            alert("计算完成，结果已保存：" + result);
         }
     </script>
 </body>

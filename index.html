@@ -14,7 +14,7 @@
     <div class="result" id="result">加载中...</div>
     <script>
         async function loadResult() {
-            let res = await fetch('data.json');
+            let res = await fetch('/api/getResult');
             let data = await res.json();
             document.getElementById('result').textContent = data.result;
         }

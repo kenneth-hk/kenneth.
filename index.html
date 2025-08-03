@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计算结果</title>
+    <style>
+        body {font-family: Arial, sans-serif; text-align: center; margin-top: 50px;}
+        .result {font-size: 2em; color: #2c3e50; margin-top: 20px;}
+    </style>
+</head>
+<body>
+    <h1>当前计算结果</h1>
+    <div class="result" id="result">加载中...</div>
+    <script>
+        async function loadResult() {
+            let res = await fetch('data.json');
+            let data = await res.json();
+            document.getElementById('result').textContent = data.result;
+        }
+        loadResult();
+    </script>
+</body>
+</html>

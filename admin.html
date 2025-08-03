@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台输入</title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 20px;}
+        input {margin: 5px 0; padding: 5px; width: 100%;}
+        button {padding: 10px; margin-top: 10px;}
+    </style>
+</head>
+<body>
+    <h1>后台数据输入</h1>
+    <label>密码：</label><br>
+    <input type="password" id="password"><br>
+    <div id="form" style="display:none;">
+        <label>气温 Ta (℃)：</label><br><input type="number" id="Ta"><br>
+        <label>相对湿度 RH (%)：</label><br><input type="number" id="RH"><br>
+        <label>风速 V (m/s)：</label><br><input type="number" id="V"><br>
+        <label>紫外线指数 UVI：</label><br><input type="number" id="UVI"><br>
+        <button onclick="calculate()">提交并计算</button>
+    </div>
+    <script>
+        const correctPassword = "admin123";
+        function checkPassword() {
+            let pwd = document.getElementById('password').value;
+            if (pwd === correctPassword) {
+                document.getElementById('password').style.display = 'none';
+                document.getElementById('form').style.display = 'block';
+            } else {
+                alert('密码错误');
+            }
+        }
+        document.getElementById('password').addEventListener('change', checkPassword);
+
+        function atan(x){ return Math.atan(x); }
+
+        async function calculate(){
+            let Ta = parseFloat(document.getElementById('Ta').value);
+            let RH = parseFloat(document.getElementById('RH').value);
+            let V = parseFloat(document.getElementById('V').value);
+            let UVI = parseFloat(document.getElementById('UVI').value);
+
+            if(isNaN(Ta)||isNaN(RH)||isNaN(V)||isNaN(UVI)){
+                alert("请输入完整数据");
+                return;
+            }
+
+            let part1 = 0.80 * (Ta * atan(0.151977 * Math.sqrt(RH + 8.313659)) 
+                + atan(Ta + RH) - atan(RH - 1.676331) 
+                + 0.003918 * Math.pow(RH, 1.5) * atan(0.023101 * RH) 
+                - 4.686035);
+
+            let part2 = 0.05 * (Ta + 0.5 * UVI / (2.8 * Math.pow(V, 0.6)));
+
+            let part3 = 0.15 * Ta;
+
+            let result = (part1 + part2 + part3).toFixed(2);
+
+            let data = {result: result};
+
+            // 保存数据 (在GitHub Pages无法直接写文件，需用静态json模拟或用Vercel动态)
+            // 这里直接提示复制结果
+            alert("计算完成，结果是：" + result + "\n请手动更新 data.json 文件内容为： {\n  \"result\": \"" + result + "\"\n} ");
+        }
+    </script>
+</body>
+</html>
